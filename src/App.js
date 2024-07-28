@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import Particles from 'react-particles-js';
 import ParticlesBg from "particles-bg";
 import Clarifai from "clarifai";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
@@ -74,7 +73,7 @@ class App extends Component {
 			.predict("face-detection", this.state.input)
 			.then((response) => {
 				if (response) {
-					fetch("http://localhost:3000/image", {
+					fetch("http://localhost:3001/image", {
 						method: "put",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({
@@ -94,6 +93,7 @@ class App extends Component {
 	onRouteChange = (route) => {
 		if (route === "signout") {
 			this.setState({ isSignedIn: false });
+			route = "signin";
 		} else if (route === "home") {
 			this.setState({ isSignedIn: true });
 		}
