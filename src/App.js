@@ -20,7 +20,7 @@ class App extends Component {
 		this.state = {
 			input: "",
 			imageUrl: "",
-			box: {},
+			boxes: [],
 			route: "signin",
 			isSignedIn: false,
 			user: {
@@ -45,22 +45,25 @@ class App extends Component {
 		});
 	};
 
-	calculateFaceLocation = (data) => {
-		const clarifaiFace =
-			data.outputs[0].data.regions[0].region_info.bounding_box;
+	calculateFaceLocations = (data) => {
+		const clarifaiFaces = data.outputs[0].data.regions.map(
+			(region) => region.region_info.bounding_box
+		);
 		const image = document.getElementById("inputimage");
 		const width = Number(image.width);
 		const height = Number(image.height);
-		return {
-			leftCol: clarifaiFace.left_col * width,
-			topRow: clarifaiFace.top_row * height,
-			rightCol: width - clarifaiFace.right_col * width,
-			bottomRow: height - clarifaiFace.bottom_row * height,
-		};
+		return clarifaiFaces.map((face) => {
+			return {
+				leftCol: face.left_col * width,
+				topRow: face.top_row * height,
+				rightCol: width - face.right_col * width,
+				bottomRow: height - face.bottom_row * height,
+			};
+		});
 	};
 
-	displayFaceBox = (box) => {
-		this.setState({ box: box });
+	displayFaceBoxes = (boxes) => {
+		this.setState({ boxes: boxes });
 	};
 
 	onInputChange = (event) => {
@@ -85,14 +88,18 @@ class App extends Component {
 							this.setState(Object.assign(this.state.user, { entries: count }));
 						});
 				}
-				this.displayFaceBox(this.calculateFaceLocation(response));
+				this.displayFaceBoxes(this.calculateFaceLocations(response));
 			})
 			.catch((err) => console.log(err));
 	};
 
 	onRouteChange = (route) => {
 		if (route === "signout") {
-			this.setState({ isSignedIn: false });
+			this.setState({
+				isSignedIn: false,
+				imageUrl: "",
+				boxes: [],
+			});
 			route = "signin";
 		} else if (route === "home") {
 			this.setState({ isSignedIn: true });
@@ -101,7 +108,7 @@ class App extends Component {
 	};
 
 	render() {
-		const { isSignedIn, imageUrl, route, box } = this.state;
+		const { isSignedIn, imageUrl, route, boxes } = this.state;
 		return (
 			<div className="App">
 				<ParticlesBg type="cobweb" bg={true} />
@@ -120,7 +127,7 @@ class App extends Component {
 							onInputChange={this.onInputChange}
 							onButtonSubmit={this.onButtonSubmit}
 						/>
-						<FaceRecognition box={box} imageUrl={imageUrl} />
+						<FaceRecognition boxes={boxes} imageUrl={imageUrl} />
 					</div>
 				) : route === "signin" ? (
 					<Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
