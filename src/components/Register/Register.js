@@ -27,7 +27,7 @@ class Register extends React.Component {
 	onSubmitSignIn = () => {
 		this.setState({ successMessage: "", errorMessage: "" });
 
-		fetch("https://face-recognition-brain-4or5.onrender.com/register", {
+		fetch("http://localhost:3001/register", {
 			method: "post",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
