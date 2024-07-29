@@ -8,10 +8,6 @@ Face Recognition Brain is a web application that allows users to detect faces in
 - [Motivation](#motivation)
 - [What I Learned](#what-i-learned)
 - [Installation](#installation)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 
